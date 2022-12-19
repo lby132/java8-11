@@ -1,6 +1,9 @@
 package me.whiteship;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Spliterator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -27,5 +30,24 @@ public class App {
         final DefaultFoo foo = new DefaultFoo("lee");
         foo.printName();
         foo.printNameUpperCase();
+
+        List<String> name = new ArrayList<>();
+        name.add("lee");
+        name.add("jong");
+        name.add("kim");
+        name.add("kim2");
+
+        //Spliterator는 Itgerate와 비슷하게 나열하는 기능이지만 쪼개는 기능이 포함되어있다.
+        final Spliterator<String> spliterator = name.spliterator();
+        //trySplit을 써서 절반으로 쪼갤수 있다.
+        final Spliterator<String> spliterator1 = spliterator.trySplit();
+
+        while (spliterator.tryAdvance(System.out::println));
+        System.out.println("=================================");
+        while (spliterator1.tryAdvance(System.out::println));
+
+        //l로 시작하는 데이터는 지운다.
+        name.removeIf(s -> s.startsWith("l"));
+        name.forEach(System.out::println);
     }
 }
