@@ -1,5 +1,7 @@
 package me.whiteship;
 
+import java.util.Optional;
+
 public class OnlineClass {
     private int id;
     private String title;
@@ -12,12 +14,8 @@ public class OnlineClass {
         this.closed = closed;
     }
 
-    public Progress getProgress() {
-        return progress;
-    }
-
-    public void setProgress(Progress progress) {
-        this.progress = progress;
+    public Optional<Progress> getProgress() {
+        return Optional.empty();
     }
 
     public int getId() {

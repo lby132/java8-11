@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -58,10 +59,47 @@ public class App2 {
         System.out.println("스프링 수업 중에 제목에 spring이 들어간 것만 모아서 List로 만들기");
         final List<String> spring = springClasses.stream()
                 .filter(oc -> oc.getTitle().contains("spring"))
-                .map(OnlineClass::getTitle)
+                .map(OnlineClass::getTitle) // map은 OnlineClass타입을 getTitle의 String타입으로 바꿔준다.
+                                            // map(oc -> oc.getTitle()) 이렇게도 사용가능
                 .collect(Collectors.toList());
 
         spring.forEach(System.out::println);
 
+        System.out.println("====================Optional================================");
+        final OnlineClass spring_boot = new OnlineClass(1, "spring boot", true);
+        Optional<Progress> progress = spring_boot.getProgress();
+        progress.ifPresent(p -> System.out.println(p.getStudyDuration()));
+        //final Duration studyDuration = spring_boot.getProgress().getStudyDuration();
+
+        final Optional<OnlineClass> spring1 = springClasses.stream()
+                .filter(oc -> oc.getTitle().startsWith("sprding"))
+                .findFirst();
+
+        spring1.ifPresent(oc -> System.out.println(oc.getTitle())); //값이 있으면 반환 없으면 아무것도 리턴안함
+
+        final OnlineClass onlineClass = spring1.orElse(createNewClass());
+        System.out.println(onlineClass.getTitle()); // 타이틀에 값이 있으면 값을 반환하고 없으면 orElse()에 정해준 값이 반환됨.
+
+        final OnlineClass onlineClass1 = spring1.orElseGet(App2::createNewClass); //orElse는 무조건 값을 출력한다. 매번 출력하기 싫으면 orElseGet을쓰자.
+        System.out.println("onlineClassOrElseGet = " + onlineClass1.getTitle());
+
+      //  OnlineClass onlineClass2 = spring1.orElseThrow(IllegalStateException::new); //값이 없으면 원하는 에러를 낼 수 있다.
+      //  System.out.println("onlineClassThrow = " + onlineClass2.getTitle());
+
+        final Optional<OnlineClass> onlineClass3 = spring1.filter(OnlineClass::isClosed);
+        System.out.println(onlineClass3.isEmpty());
+
+        // map과 flatMap의 차이점은 OnlineClass안에 Progress라는 객체가 있듯이 감싸고 있는것들을 한번에 까주지만
+        // map은 아래와 같이 감싸고 있는 껍질을 두번에 걸쳐 까줘야한다.
+        final Optional<Progress> flatMap = spring1.flatMap(OnlineClass::getProgress);
+        final Optional<Optional<Progress>> map = spring1.map(OnlineClass::getProgress);
+        final Optional<Progress> map2 = map.orElseThrow();
+
+
+    }
+
+    private static OnlineClass createNewClass() {
+        System.out.println("creating new online class");
+        return new OnlineClass(10, "New class", false);
     }
 }
