@@ -95,6 +95,8 @@ public class App2 {
         final Optional<Optional<Progress>> map = spring1.map(OnlineClass::getProgress);
         final Optional<Progress> map2 = map.orElseThrow();
 
+        //Stream에서의 flatMap 같은 경우는 input이 하나면 output이 여러개일수 있고
+        //Optional에서의 flatMap 같은 경우에서는 input이 하나면 output이 하나이다.
 
     }
 
